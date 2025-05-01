@@ -40,7 +40,7 @@ class Email:
 
     def read_emails_from_file(file_path) -> List[str]:
         with open(file_path, "r") as f:
-            emails = 
+            emails = []
 
     def send(self):
         logger.info(self.mailer.send(self.mail_body))
