@@ -7,7 +7,7 @@ app = FastAPI()
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
-    return RedirectResponse(url="/reset-password")
+    return RedirectResponse(url="https://www.tiktok.com/")
 
 
 @app.get("/reset-password", response_class=HTMLResponse)
