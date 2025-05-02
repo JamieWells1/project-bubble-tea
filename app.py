@@ -61,6 +61,6 @@ async def read_details(x_api_key: str = Header(...)):
         )
 
     with open("details.json", "w") as f:
-        f.write("")
+        f.write("[]")
 
     return {"status": 200}
