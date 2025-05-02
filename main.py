@@ -20,4 +20,4 @@ def send_email(recipient: str) -> None:
     print(f"\n=> {new_email.send()}")
 
 
-send_email("jamiewixbusiness@gmail.com")
+send_email("jamiewells528@gmail.com")

