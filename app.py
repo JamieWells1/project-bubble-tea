@@ -45,8 +45,22 @@ async def read_details(x_api_key: str = Header(...)):
     if x_api_key != os.getenv("MY_API_KEY"):
         raise HTTPException(
             status_code=401,
-            detail=f"Unauthorized: Invalid API Key. You parsed in {x_api_key}, but was expecting {os.getenv("MY_API_KEY")}",
+            detail=f"Unauthorized: Invalid API Key.",
         )
 
     with open("details.json", "r") as f:
         return json.load(f)
+
+
+@app.get("/clear-json")
+async def read_details(x_api_key: str = Header(...)):
+    if x_api_key != os.getenv("MY_API_KEY"):
+        raise HTTPException(
+            status_code=401,
+            detail=f"Unauthorized: Invalid API Key.",
+        )
+
+    with open("details.json", "w") as f:
+        f.write("")
+
+    return {"status": 200}
