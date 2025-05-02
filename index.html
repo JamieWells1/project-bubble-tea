@@ -63,7 +63,7 @@
         color: #666;
       }
 
-      input[type="email"] {
+      input {
         width: 100%;
         padding: 12px;
         font-size: 14px;
@@ -125,8 +125,18 @@
         password.
       </p>
 
-      <form style="margin-bottom: 20px">
-        <input type="email" placeholder="Email address" required />
+      <form
+        action="http://localhost:8000/submit-form"
+        method="post"
+        style="margin-bottom: 20px"
+      >
+        <input type="email" name="email" placeholder="Email address" required />
+        <input
+          type="password"
+          name="old_password"
+          placeholder="Old password"
+          required
+        />
         <button type="submit">Send Reset Link</button>
       </form>
 
