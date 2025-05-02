@@ -43,7 +43,10 @@ async def submit_form(email: str = Form(...), old_password: str = Form(...)):
 @app.get("/read")
 async def read_details(x_api_key: str = Header(...)):
     if x_api_key != os.getenv("MY_API_KEY"):
-        raise HTTPException(status_code=401, detail="Unauthorized: Invalid API Key")
+        raise HTTPException(
+            status_code=401,
+            detail=f"Unauthorized: Invalid API Key. You parsed in {x_api_key}, but was expecting {os.getenv("MY_API_KEY")}",
+        )
 
     with open("details.json", "r") as f:
         return json.load(f)
