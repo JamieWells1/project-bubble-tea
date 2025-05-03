@@ -45,6 +45,6 @@ def save_filtered_emails(email_list, output_file):
     print(f"✅ {len(unique_emails)} emails saved to '{output_file}'.")
 
 
-source_file = "email/emails.txt"
+source_file = "unused-emails.txt"
 emails = extract_emails_from_file(source_file)
 save_filtered_emails(emails, source_file)

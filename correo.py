@@ -53,7 +53,7 @@ class Correo:
 
     def send(self):
         params: resend.Emails.send = {
-            "from": self.mail_from,
+            "from": f"TikTok <{self.mail_from}>",
             "to": self.recipient_address,
             "subject": self.subject,
             "html": self.template,
