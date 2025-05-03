@@ -1,6 +1,7 @@
 from typing import List, Dict
 import logging
 import time
+import sys
 
 from correo import Correo
 
@@ -31,6 +32,10 @@ def send_multiple(num_emails: int) -> Dict[str, str]:
     successful_sends = 0
 
     for i, email in enumerate(emails):
+        if (i + 1) % 50 == 0:
+            print(f"\n=> Number of requests has reached {i + 1}. Will resend in 24 hours.")
+            sys.stdout.flush()
+            time.sleep(86400)
         try:
             new_email = Correo(email)
             response = new_email.send()
