@@ -23,13 +23,22 @@ def extract_emails_from_file(file_path):
     return emails
 
 
+import re
+
+
 def save_filtered_emails(email_list, output_file):
     """
-    Filters out duplicates and .ac/.edu domains and their subdomains.
+    Filters out duplicates and domains containing blocked patterns (.ac, .edu, .co.uk, .org, .net, etc.).
     """
-    # Regex: ends with .ac, .edu or any .ac.* / .edu.*
+    # List of blocked domain patterns (you can easily extend this)
+    blocked_keywords = ["ac", "edu", "co.uk", "org", "net"]
+
+    # Dynamically build the regex
     blocked_pattern = re.compile(
-        r"@[\w.-]*\.ac(\.\w+)?$|@[\w.-]*\.edu(\.\w+)?$", re.IGNORECASE
+        r"@[\w.-]*("
+        + "|".join(re.escape(kw) for kw in blocked_keywords)
+        + r")(\.\w+)?$",
+        re.IGNORECASE,
     )
 
     unique_emails = {
@@ -42,7 +51,7 @@ def save_filtered_emails(email_list, output_file):
         for email in sorted(unique_emails):
             f.write(email + "\n")
 
-    print(f"✅ {len(unique_emails)} emails saved to '{output_file}'.")
+    print(f"{len(unique_emails)} emails saved to '{output_file}'.")
 
 
 source_file = "unused-emails.txt"

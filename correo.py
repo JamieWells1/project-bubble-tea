@@ -39,7 +39,7 @@ class Correo:
         return masked_name + "@" + domain
 
     def __set_template(self) -> str:
-        with open("email/email-template.html", "r") as f:
+        with open("email_utils/email-template.html", "r") as f:
             template = f.read()
         template = template.replace(
             "{masked-email}", self.__mask_email(self.recipient_address)

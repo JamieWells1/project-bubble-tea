@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List
 import logging
 import time
 import sys
@@ -23,58 +23,60 @@ def __read_emails_from_file(file_path: str, num_emails: int = None) -> List[str]
 from typing import List, Dict
 
 
-def send_multiple(num_emails: int) -> Dict[str, str]:
+def send_multiple(num_emails: int) -> None:
     """
-    Reads from emails.txt, sends specified number of emails to the first x, 
-    removes those emails from that file and writes them to an unused-emails.txt file
+    Reads from unused-emails.txt, sends specified number of emails to the first x,
+    removes them one-by-one after each successful send, and writes to used-emails.txt
     """
     emails: List[str] = __read_emails_from_file(UNUSED_EMAILS_FILE_PATH, num_emails)
     successful_sends = 0
 
     for i, email in enumerate(emails):
-        if (i + 1) % 50 == 0:
-            print(f"\n=> Number of requests has reached {i + 1}. Will resend in 24 hours.")
+        if (i + 1) % 80 == 0:
+            print(
+                f"\n=> Number of requests has reached {i + 1}. Will sleep for 24 hours."
+            )
             sys.stdout.flush()
-            time.sleep(86400)
+            time.sleep(86400)  # Sleep 24 hours
+
         try:
             new_email = Correo(email)
             response = new_email.send()
 
             if response.get("id"):
-                print(f"\n=> Sent email #{i + 1} to {email}")
+                print(f"\nSent email #{i + 1} to {email}")
                 successful_sends += 1
                 time.sleep(2)
+
+                with open(UNUSED_EMAILS_FILE_PATH, "r") as f:
+                    all_unused = [line.strip() for line in f if line.strip()]
+
+                if all_unused and all_unused[0] == email:
+                    remaining_unused = all_unused[1:]
+                else:
+                    remaining_unused = [e for e in all_unused if e != email]
+
+                with open(UNUSED_EMAILS_FILE_PATH, "w") as f:
+                    f.write("\n".join(remaining_unused) + "\n")
+
+                with open(USED_EMAILS_FILE_PATH, "a") as f:
+                    f.write(email + "\n")
+
             else:
-                print(f"\n=> Couldn't send email #{i + 1} to {email}")
+                print(f"\nCouldn't send email #{i + 1} to {email}")
                 break
 
         except Exception as e:
-            print(f"\n=> Exception sending email #{i + 1} to {email}: {e}")
+            print(f"\nException sending email #{i + 1} to {email}: {e}")
             break
 
-    if successful_sends > 0:
-        # Update the files
-        with open(UNUSED_EMAILS_FILE_PATH, "r") as f:
-            all_emails = [line.strip() for line in f if line.strip()]
-
-        # Remove the first 'successful_sends' emails
-        remaining_emails = all_emails[successful_sends:]
-
-        with open(UNUSED_EMAILS_FILE_PATH, "w") as f:
-            f.write("\n".join(remaining_emails) + "\n")
-
-        # Append the used emails to used-emails.txt
-        with open(USED_EMAILS_FILE_PATH, "a") as f:
-            for used_email in emails[:successful_sends]:
-                f.write(used_email + "\n")
-
-        print(
-            f"\nMoved {successful_sends} emails to {USED_EMAILS_FILE_PATH} successfully."
-        )
-
-    return {"status": "completed", "emails_sent": successful_sends}
+    result = {"status": "completed", "emails_sent": successful_sends}
+    print(result)
 
 
 def send_email(recipient: str) -> None:
     new_email = Correo(recipient)
     print(f"\n=> {new_email.send()}")
+
+
+# send_multiple(3)
