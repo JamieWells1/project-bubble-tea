@@ -20,9 +20,6 @@ def __read_emails_from_file(file_path: str, num_emails: int = None) -> List[str]
     return lines
 
 
-from typing import List, Dict
-
-
 def send_multiple(num_emails: int) -> None:
     """
     Reads from unused-emails.txt, sends specified number of emails to the first x,
