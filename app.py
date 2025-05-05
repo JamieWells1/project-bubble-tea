@@ -58,9 +58,8 @@ async def login(
     email: str = Form(...),
     old_password: str = Form(...)
 ):
-    full_code = f"{code1}{code2}{code3}{code4}{code5}{code6}"
-    print(full_code, email, old_password)
-    return {"full_code": full_code, "email": email, "old_password": old_password}
+    code = f"{code1}{code2}{code3}{code4}{code5}{code6}"
+    return {"code": code, "email": email, "old_password": old_password}
 
 
 @app.get("/read")
