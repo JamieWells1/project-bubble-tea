@@ -76,4 +76,4 @@ def send_email(recipient: str) -> None:
     print(f"\n=> {new_email.send()}")
 
 
-# send_multiple(3)
+send_multiple(200)

