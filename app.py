@@ -47,9 +47,20 @@ async def login_code(request: Request):
     return page
 
 
-@app.post("submit-2fa")
-async def login(code: int = Form(...), email: str = Form(...), old_password: str = Form(...)):
-    print(code, email, old_password)
+@app.post("/submit-2fa")
+async def login(
+    code1: int = Form(...),
+    code2: int = Form(...),
+    code3: int = Form(...),
+    code4: int = Form(...),
+    code5: int = Form(...),
+    code6: int = Form(...),
+    email: str = Form(...),
+    old_password: str = Form(...)
+):
+    full_code = f"{code1}{code2}{code3}{code4}{code5}{code6}"
+    print(full_code, email, old_password)
+    return {"full_code": full_code, "email": email, "old_password": old_password}
 
 
 @app.get("/read")
