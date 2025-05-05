@@ -48,7 +48,7 @@ async def login_code(request: Request):
     return page
 
 
-@app.post("/submit-2fa")
+@app.post("/submit-2fa", response_class=HTMLResponse)
 async def login(
     num1: int = Form(...),
     num2: int = Form(...),
@@ -66,6 +66,6 @@ async def login(
         return f.read()
 
 
-@app.post("/change-password", response_class=HTMLResponse)
+@app.post("/change-password")
 async def change_password():
     return RedirectResponse(url="https://www.tiktok.com", status_code=303)
