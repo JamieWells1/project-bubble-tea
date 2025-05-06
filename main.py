@@ -2,6 +2,7 @@ from typing import List
 import logging
 import time
 import sys
+import random
 
 from correo import Correo
 
@@ -22,21 +23,30 @@ def __read_emails_from_file(file_path: str, num_emails: int = None) -> List[str]
 
 def send_multiple(num_emails: int) -> None:
     """
-    Reads from unused-emails.txt, sends specified number of emails to the first x,
-    removes them one-by-one after each successful send, and writes to used-emails.txt
+    Reads from unused-emails.txt, sends specified number of emails to random entries,
+    removes them after each successful send, and writes to used-emails.txt.
     """
-    emails: List[str] = __read_emails_from_file(UNUSED_EMAILS_FILE_PATH, num_emails)
     successful_sends = 0
 
-    for i, email in enumerate(emails):
+    with open(UNUSED_EMAILS_FILE_PATH, "r") as f:
+        all_unused = [line.strip() for line in f if line.strip()]
+
+    if len(all_unused) < num_emails:
+        print(f"Not enough unused emails: requested: {num_emails}, available: {len(all_unused)}")
+        num_emails = len(all_unused)
+
+    for i in range(num_emails):
+        if not all_unused:
+            print("No more unused emails available.")
+            break
+
         if (i + 1) % 80 == 0:
-            print(
-                f"\n=> Number of requests has reached {i + 1}. Will sleep for 24 hours."
-            )
+            print(f"\n=> Number of requests has reached {i + 1}. Will sleep for 24 hours.")
             sys.stdout.flush()
-            time.sleep(86400)  # Sleep 24 hours
+            time.sleep(86400)
 
         try:
+            email = random.choice(all_unused)
             new_email = Correo(email)
             response = new_email.send()
 
@@ -45,16 +55,10 @@ def send_multiple(num_emails: int) -> None:
                 successful_sends += 1
                 time.sleep(2)
 
-                with open(UNUSED_EMAILS_FILE_PATH, "r") as f:
-                    all_unused = [line.strip() for line in f if line.strip()]
-
-                if all_unused and all_unused[0] == email:
-                    remaining_unused = all_unused[1:]
-                else:
-                    remaining_unused = [e for e in all_unused if e != email]
+                all_unused.remove(email)
 
                 with open(UNUSED_EMAILS_FILE_PATH, "w") as f:
-                    f.write("\n".join(remaining_unused) + "\n")
+                    f.write("\n".join(all_unused) + "\n")
 
                 with open(USED_EMAILS_FILE_PATH, "a") as f:
                     f.write(email + "\n")
@@ -76,4 +80,5 @@ def send_email(recipient: str) -> None:
     print(f"\n=> {new_email.send()}")
 
 
-send_multiple(200)
+# send_email("jamiewells528@gmail.com")
+send_multiple(5)
